@@ -79,7 +79,7 @@ jobs:
           docker pull "sivanna7/nodeapp:${SHORT_TAG}"
 
           DOCKER_USERNAME=sivanna7 IMAGE_TAG="${SHORT_TAG}" \
-            docker compose up -d --no-build --pull never
+            docker compose up -d --no-build --pull missing
 
           docker compose ps
           docker compose logs --tail=15 app
