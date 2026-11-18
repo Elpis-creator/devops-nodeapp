@@ -30,7 +30,6 @@ jobs:
         run: npm test
 
       - name: Generate Docker image tags
-        id: tag
         shell: bash
         run: |
           echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
@@ -53,3 +52,35 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/nodeapp:${{ env.IMAGE_TAG }}
             ${{ secrets.DOCKER_USERNAME }}/nodeapp:${{ env.BRANCH_TAG }}
+
+  deploy:
+    name: Deploy to AWS EC2
+    needs: build-and-push
+    runs-on: [self-hosted, Linux, X64, docker-ec2]
+
+    steps:
+      - name: Pull and deploy Docker containers
+        shell: bash
+        run: |
+          set -e
+          cd /home/ubuntu/devops-nodeapp
+
+          docker compose pull
+          docker compose up -d --no-build --remove-orphans
+
+          docker compose ps
+
+      - name: Verify application
+        shell: bash
+        run: |
+          set -e
+          for i in {1..15}; do
+            if curl --fail --silent http://127.0.0.1:3000 | grep -q "Database: Connected"; then
+              echo "Deployment successful!"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Deployment verification failed"
+          exit 1
