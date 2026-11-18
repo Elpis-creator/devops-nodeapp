@@ -9,7 +9,7 @@ const server = http.createServer((req, res) => {
       <head><title>DevOps Lab</title></head>
       <body style="font-family:Arial;text-align:center;padding:80px">
         <h1>DevOps Lab</h1>
-        <h2>Deployment successful!</h2>
+        <h2>CI/CD deployment updated successfully!</h2>
         <p>Node.js application running on AWS EC2</p>
       </body>
     </html>
@@ -23,3 +23,4 @@ if (require.main === module) {
 }
 
 module.exports = server;
+
