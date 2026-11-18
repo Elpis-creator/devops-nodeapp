@@ -53,6 +53,37 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/nodeapp:${{ env.IMAGE_TAG }}
             ${{ secrets.DOCKER_USERNAME }}/nodeapp:${{ env.BRANCH_TAG }}
 
+  deploy-terraform-ec2:
+    name: Deploy to Terraform EC2
+    needs: build-and-push
+    runs-on: [self-hosted, Linux, X64, terraform-ec2]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy Docker Compose
+        shell: bash
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          set -e
+
+          cd /home/ubuntu/devops-nodeapp
+
+          git fetch origin main
+          git reset --hard origin/main
+
+          SHORT_TAG="${IMAGE_TAG:0:7}"
+
+          docker pull "sivanna7/nodeapp:${SHORT_TAG}"
+
+          DOCKER_USERNAME=sivanna7 IMAGE_TAG="${SHORT_TAG}" \
+            docker compose up -d --no-build --pull never
+
+          docker compose ps
+          docker compose logs --tail=15 app
+
   deploy:
     name: Deploy to AWS EC2
     needs: build-and-push

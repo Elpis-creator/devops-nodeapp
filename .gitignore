@@ -1,4 +1,15 @@
-﻿node_modules/
+﻿# Node.js
+node_modules/
 .env
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+*.tfplan.*
+
+# AWS SSH keys
 *.pem
-*.key
