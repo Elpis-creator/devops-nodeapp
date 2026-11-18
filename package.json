@@ -1,0 +1,11 @@
+﻿{
+  "name": "devops-nodeapp",
+  "version": "1.0.0",
+  "description": "Node.js application for AWS EC2 CI/CD practice",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
